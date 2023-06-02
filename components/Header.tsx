@@ -17,19 +17,17 @@ const Header: FC = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [suggestions, setSuggestions] = useState<string>('')
 
-  // useEffect(() => {
-  //   if (board.columns.size === 0) return
-  //   setLoading(true)
+  useEffect(() => {
+    if (board.columns.size === 0) return
+    setLoading(true)
 
-  //   const fetchSuggestionFunc = async () => {
-  //     console.log('fetching suggestion')
-  //     const suggestion = await fetchSuggestion(board)
-  //     setSuggestions(suggestion)
-  //     console.log(suggestion)
-  //     setLoading(false)
-  //   }
-  //   fetchSuggestionFunc()
-  // }, [board])
+    const fetchSuggestionFunc = async () => {
+      const suggestion = await fetchSuggestion(board)
+      setSuggestions(suggestion)
+      setLoading(false)
+    }
+    fetchSuggestionFunc()
+  }, [board])
 
   return (
     <header>

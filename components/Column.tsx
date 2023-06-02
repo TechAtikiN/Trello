@@ -1,8 +1,9 @@
 import { PlusCircleIcon } from '@heroicons/react/24/outline'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
+import { useBoardStore } from '@/store/BoardStore'
+import { useModalStore } from '@/store/ModalStore'
 
 import TodoCard from './TodoCard'
-import { useBoardStore } from '@/store/BoardStore'
 type Props = {
   id: TypedColumn
   todos: Todo[]
@@ -18,7 +19,13 @@ const idToColumnText: {
 }
 
 const Column = ({ id, todos, index }: Props) => {
-  const [searchString] = useBoardStore((state) => [state.searchString])
+  const [searchString, setNewTaskType] = useBoardStore((state) => [state.searchString, state.setNewTaskType])
+  const openModal = useModalStore((state) => state.openModal)
+
+  const handleAddTodo = () => {
+    setNewTaskType(id)
+    openModal()
+  }
 
   return (
     <Draggable draggableId={id} index={index}>
@@ -43,7 +50,7 @@ const Column = ({ id, todos, index }: Props) => {
                     {!searchString
                       ? todos.length
                       : todos.filter((todo) =>
-                        todo.$title
+                        todo.title
                           .toLowerCase()
                           .includes(searchString.toLowerCase())
                       ).length
@@ -55,7 +62,7 @@ const Column = ({ id, todos, index }: Props) => {
                   {todos.map((todo, index) => {
                     if (
                       searchString &&
-                      !todo.$title
+                      !todo.title
                         .toLowerCase()
                         .includes(searchString.toLowerCase())
                     ) return null
@@ -82,7 +89,10 @@ const Column = ({ id, todos, index }: Props) => {
                   {provided.placeholder}
 
                   <div className='flex items-end justify-end p-2'>
-                    <button className='text-green-500 hover:text-green-600'>
+                    <button
+                      onClick={handleAddTodo}
+                      className='text-green-500 hover:text-green-600'
+                    >
                       <PlusCircleIcon className='h-8 w-8 mr-2' />
                     </button>
                   </div>
